@@ -4,8 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🦜 La Expo de los Loros</title>
-<meta name="description" content="La exposición de los loros: datos, plumas, pico, alas, especies y mucho color. 🦜🌈">
+<meta name="description" content="La exposición de los loros: datos curiosos, plumas de colores, pico, alas, dónde viven y especies como el guacamayo, el loro gris y la cacatúa. 🦜🌈">
+<meta name="keywords" content="loros, expo de loros, aves, guacamayo, loro gris, cacatúa, psittaciformes, exposición infantil, naturaleza, selva">
+<meta name="author" content="La Expo de los Loros">
+<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#2ecc71">
+<link rel="canonical" href="https://unimauro.github.io/el_loro/">
+<!-- Open Graph (WhatsApp / Facebook / stickers) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="La Expo de los Loros">
+<meta property="og:title" content="🦜 La Expo de los Loros">
+<meta property="og:description" content="Una aventura llena de colores para conocer a los loros: plumas, pico, alas, dónde viven y muchas especies. 🌈">
+<meta property="og:url" content="https://unimauro.github.io/el_loro/">
+<meta property="og:image" content="https://unimauro.github.io/el_loro/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_PE">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="🦜 La Expo de los Loros">
+<meta name="twitter:description" content="Conoce a los loros: plumas de colores, pico, alas, dónde viven y muchas especies. 🌈">
+<meta name="twitter:image" content="https://unimauro.github.io/el_loro/og-image.jpg">
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Loros">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4LJNEQ532T"></script>
 <script>
@@ -393,6 +418,14 @@
     const frases=['¡Soy Blipii! 🦜','¡Hola! 👋','¡Lorito bonito! 💚','¡Squawk! 📣','¡Quiero fruta! 🍎'];
     b.textContent=frases[Math.floor(Math.random()*frases.length)];
     b.style.animation='none';b.offsetHeight;b.style.animation='pop .5s ease both';
+    // Sonido REAL de loro 🦜
+    try{
+      if(!window._blipiiAudio){window._blipiiAudio=new Audio('assets/blipii.mp3');}
+      const a=window._blipiiAudio;a.currentTime=0;a.volume=0.9;
+      a.play().catch(()=>pitidoLoro());
+    }catch(e){pitidoLoro();}
+  }
+  function pitidoLoro(){ // respaldo si el audio no carga
     try{const c=new(window.AudioContext||window.webkitAudioContext)();
       const o=c.createOscillator(),g=c.createGain();o.type='triangle';
       o.frequency.setValueAtTime(680,c.currentTime);
