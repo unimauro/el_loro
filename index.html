@@ -404,6 +404,8 @@
       <p style="font-size:1.2rem;margin-top:.6rem">Gracias por ser parte de esta aventura y aprender sobre los loros. 🦜</p>
       <p class="firma">🦜 Con mucho cariño 🦜</p>
       <p style="margin-top:1rem;font-size:1.2rem;color:var(--verde2);font-weight:800">🦜 Cada vuelo es una nueva aventura. 🌿</p>
+      <p id="contador-box" style="margin-top:1.2rem;font-size:1.15rem;color:var(--verdeh);font-weight:800">
+        👀 Ya somos <span id="cnt" style="color:var(--naranja)">…</span> visitantes en la expo 🦜</p>
       <p style="margin-top:1.4rem;font-weight:800;color:var(--verdeh);font-size:1.15rem">📣 ¡Comparte la expo en redes!</p>
       <div class="share-bar">
         <a class="sbtn wa" id="sh-wa" target="_blank" rel="noopener">💬 WhatsApp</a>
@@ -525,11 +527,13 @@
         i.select();try{document.execCommand('copy');toast('¡Enlace copiado! 🦜');}catch(e){}i.remove();});
   }
   function compartirNativo(){
+    registrarCompartir();
     if(navigator.share){navigator.share({title:'La Expo de los Loros',text:SHARE_TXT,url:SITE}).catch(()=>{});}
     else{copiarLink();}
   }
   async function compartirPost(i){
     const p=cargar()[i];if(!p)return;
+    registrarCompartir();
     const texto=`🦜 "${(p.mensaje||'').replace(/[<>]/g,'')}" — ${(p.nombre||'').replace(/[<>]/g,'')} · La Expo de los Loros`;
     try{
       if(p.img && navigator.canShare){
@@ -543,6 +547,26 @@
     }catch(e){if(e&&e.name==='AbortError')return;}
     window.open('https://wa.me/?text='+encodeURIComponent(texto+' '+SITE),'_blank');
   }
+
+  /* ---- Contador de visitas (api.tunky.net, bien cerrado por CORS) ---- */
+  const API='https://api.tunky.net/loros';
+  function pintarContador(n){
+    const el=document.getElementById('cnt');
+    if(el && typeof n==='number'){ el.textContent=n.toLocaleString('es-PE'); }
+    else { const box=document.getElementById('contador-box'); if(box) box.style.display='none'; }
+  }
+  function registrarCompartir(){ fetch(API+'/hit?kind=compartir',{method:'POST',keepalive:true}).catch(()=>{}); }
+  (async function contarVisita(){
+    try{
+      const r=await fetch(API+'/hit?kind=visita',{method:'POST'});
+      const d=await r.json(); pintarContador(d && d.total);
+    }catch(e){
+      try{ const r=await fetch(API+'/count'); const d=await r.json(); pintarContador(d && d.total); }
+      catch(_){ pintarContador(null); }
+    }
+  })();
+  // registrar "compartir" en los botones de la barra
+  ['sh-wa','sh-fb','sh-x'].forEach(id=>{const a=document.getElementById(id);if(a)a.addEventListener('click',registrarCompartir);});
 </script>
 </body>
 </html>
