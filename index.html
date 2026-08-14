@@ -17,8 +17,11 @@
 <meta property="og:description" content="Una aventura llena de colores para conocer a los loros: plumas, pico, alas, dónde viven y muchas especies. 🌈">
 <meta property="og:url" content="https://unimauro.github.io/el_loro/">
 <meta property="og:image" content="https://unimauro.github.io/el_loro/og-image.jpg">
+<meta property="og:image:secure_url" content="https://unimauro.github.io/el_loro/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Guacamayo colorido con el texto La Expo de los Loros">
 <meta property="og:locale" content="es_PE">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
@@ -148,11 +151,11 @@
   .habitat span{font-size:2.4rem;display:block;margin-bottom:.3rem}
 
   /* galería especies */
-  .galeria{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:1.2rem}
-  @media(min-width:560px){.galeria{grid-template-columns:1fr 1fr}}
-  @media(min-width:900px){.galeria{grid-template-columns:1fr 1fr 1fr}}
-  .especie{background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--sombra);
-    border:5px solid #fff;transition:transform .15s}
+  .galeria{display:flex;flex-wrap:wrap;justify-content:center;gap:1.2rem;margin-top:1.2rem}
+  .especie{flex:1 1 100%;max-width:440px;background:#fff;border-radius:24px;overflow:hidden;
+    box-shadow:var(--sombra);border:5px solid #fff;transition:transform .15s}
+  @media(min-width:560px){.especie{flex:0 1 calc(50% - .6rem);max-width:none}}
+  @media(min-width:900px){.especie{flex:0 1 calc(33.333% - .8rem)}}
   .especie:hover{transform:translateY(-6px) rotate(-1deg)}
   .especie img{width:100%;height:200px;object-fit:cover}
   .especie .info{padding:1rem 1.1rem}
