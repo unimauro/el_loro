@@ -1,6 +1,6 @@
-# 🦜 El Loro — La Expo de Gael
+# 🦜 El Loro — La Expo de los Loros
 
-Página web de la exposición de **Gael Cárdenas Urrutia** (YMCA · 3 años) sobre los loros.
+Página web de la exposición sobre los loros.
 Sitio estático (HTML/CSS/JS), mobile-first, sin dependencias, listo para GitHub Pages.
 
 ## Ver en vivo
@@ -29,7 +29,7 @@ Para poner tus diseños, sube estos archivos a `assets/` (un solo push actualiza
 
 ## Comparte tu loro (muro)
 La sección "Comparte tu loro" guarda comentarios y fotos en el propio dispositivo (localStorage).
-Para hacerlos **compartidos entre todos los celulares**, conecta la Tunky API definiendo en el HTML:
+Para hacerlos **compartidos entre todos los celulares** (estilo Panchita), conecta la Tunky API definiendo en el HTML:
 
 ```html
 <script>window.TUNKY_API = 'https://tu-endpoint-tunky/loros';</script>

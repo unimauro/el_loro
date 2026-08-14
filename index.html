@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦜 La Expo de los Loros · Gael</title>
-<meta name="description" content="La exposición de Gael Cárdenas Urrutia sobre los loros. YMCA · 3 años. Datos, plumas, pico, alas, especies y mucho color.">
+<title>🦜 La Expo de los Loros</title>
+<meta name="description" content="La exposición de los loros: datos, plumas, pico, alas, especies y mucho color. 🦜🌈">
 <meta name="theme-color" content="#2ecc71">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
 <style>
@@ -182,10 +182,9 @@
   <header class="hero" id="inicio">
     <h1>🦜 ¡La Expo de los <span class="r">Loros</span>! 🦜</h1>
     <div>
-      <span class="badge">Una aventura de Gael Cárdenas Urrutia</span>
-      <span class="badge">YMCA · 3 años</span>
+      <span class="badge">Aves increíbles llenas de colores 🌈</span>
     </div>
-    <p class="frase">Hoy aprendemos juntos sobre estas increíbles aves llenas de colores 🌈</p>
+    <p class="frase">Hoy aprendemos juntos sobre los loros y todos sus colores 🦜</p>
     <button class="cta" onclick="document.getElementById('loro').scrollIntoView()">🌿 ¡Comenzar la aventura! 🌿</button>
     <div class="hero-img">
       <img src="assets/poster-hero.jpg" onerror="this.src='assets/ara_ararauna.jpg'"
@@ -332,7 +331,7 @@
   <section id="compartir">
     <div class="compartir">
       <h3>🦜 ¡Comparte tu loro!</h3>
-      <p class="sub">¿Conoces un loro? Súbelo y déjale un saludo a Gael 💚</p>
+      <p class="sub">¿Conoces un loro? Súbelo y déjanos un saludo 💚</p>
       <form class="form" id="form" onsubmit="return publicar(event)">
         <input id="nombre" type="text" placeholder="Tu nombre" maxlength="40" required>
         <textarea id="mensaje" placeholder="Escribe un comentario bonito sobre los loros..." maxlength="240" required></textarea>
@@ -350,16 +349,15 @@
   <section id="gracias">
     <div class="final">
       <div class="arcoiris">🟥🟧🟨🟩🟦🟪</div>
-      <h3>❤️ Gracias por acompañarme</h3>
-      <p style="font-size:1.2rem;margin-top:.6rem">Gracias por ser parte de mi aventura y escuchar mi exposición sobre los loros. 🦜</p>
-      <p class="firma">Con cariño,<br>Gael Cárdenas Urrutia</p>
-      <p style="color:var(--verdeh);font-weight:700">YMCA · 3 años 🦜</p>
+      <h3>❤️ ¡Gracias por acompañarnos!</h3>
+      <p style="font-size:1.2rem;margin-top:.6rem">Gracias por ser parte de esta aventura y aprender sobre los loros. 🦜</p>
+      <p class="firma">🦜 Con mucho cariño 🦜</p>
       <p style="margin-top:1rem;font-size:1.2rem;color:var(--verde2);font-weight:800">🦜 Cada vuelo es una nueva aventura. 🌿</p>
     </div>
   </section>
 </main>
 
-<footer>Hecho con mucho cariño para la exposición de Gael 💚🦜</footer>
+<footer>Hecho con mucho cariño para la exposición de los loros 💚🦜</footer>
 
 <script>
   /* ---- fondo: hojas fijas + plumas cayendo + loros volando ---- */
@@ -384,7 +382,7 @@
   /* ---- Blipii habla (sonido gracioso) ---- */
   function blipiiHabla(){
     const b=document.getElementById('burbuja');
-    const frases=['¡Soy Blipii! 🦜','¡Hola Gael! 👋','¡Lorito bonito! 💚','¡Squawk! 📣','¡Quiero fruta! 🍎'];
+    const frases=['¡Soy Blipii! 🦜','¡Hola! 👋','¡Lorito bonito! 💚','¡Squawk! 📣','¡Quiero fruta! 🍎'];
     b.textContent=frases[Math.floor(Math.random()*frases.length)];
     b.style.animation='none';b.offsetHeight;b.style.animation='pop .5s ease both';
     try{const c=new(window.AudioContext||window.webkitAudioContext)();
