@@ -191,6 +191,21 @@
   .final .firma{font-size:1.3rem;font-weight:800;color:var(--naranja);margin-top:1rem}
   .arcoiris{font-size:2rem;letter-spacing:.15rem;margin:.6rem 0}
 
+  /* compartir en redes */
+  .share-bar{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.1rem}
+  .sbtn{display:inline-flex;align-items:center;gap:.4rem;font-family:inherit;font-weight:800;font-size:1rem;
+    cursor:pointer;border:none;border-radius:999px;padding:.7rem 1.2rem;color:#fff;text-decoration:none;
+    box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .1s}
+  .sbtn:active{transform:translateY(4px);box-shadow:0 0 0}
+  .sbtn.wa{background:#25D366}.sbtn.fb{background:#1877F2}.sbtn.x{background:#111}
+  .sbtn.cp{background:var(--naranja)}.sbtn.nat{background:var(--morado)}
+  .post .share-post{margin-top:.6rem;background:#25D366;color:#fff;border:none;border-radius:999px;
+    padding:.45rem 1rem;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem}
+  .post .share-post:active{transform:translateY(2px)}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:#222;color:#fff;padding:.8rem 1.3rem;border-radius:999px;font-weight:700;z-index:100;
+    opacity:0;pointer-events:none;transition:.25s}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   footer{text-align:center;padding:2rem 1rem 3rem;color:var(--verdeh);font-weight:600;position:relative;z-index:1}
   @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
@@ -389,11 +404,20 @@
       <p style="font-size:1.2rem;margin-top:.6rem">Gracias por ser parte de esta aventura y aprender sobre los loros. 🦜</p>
       <p class="firma">🦜 Con mucho cariño 🦜</p>
       <p style="margin-top:1rem;font-size:1.2rem;color:var(--verde2);font-weight:800">🦜 Cada vuelo es una nueva aventura. 🌿</p>
+      <p style="margin-top:1.4rem;font-weight:800;color:var(--verdeh);font-size:1.15rem">📣 ¡Comparte la expo en redes!</p>
+      <div class="share-bar">
+        <a class="sbtn wa" id="sh-wa" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a class="sbtn fb" id="sh-fb" target="_blank" rel="noopener">📘 Facebook</a>
+        <a class="sbtn x" id="sh-x" target="_blank" rel="noopener">✖️ X</a>
+        <button class="sbtn cp" onclick="copiarLink()">🔗 Copiar enlace</button>
+        <button class="sbtn nat" onclick="compartirNativo()">📤 Compartir</button>
+      </div>
     </div>
   </section>
 </main>
 
 <footer>Hecho con mucho cariño para la exposición de los loros 💚🦜</footer>
+<div id="toast" role="status"></div>
 
 <script>
   /* ---- fondo: hojas fijas + plumas cayendo + loros volando ---- */
@@ -454,10 +478,12 @@
   function cargar(){return JSON.parse(localStorage.getItem(KEY)||'[]');}
   function pintar(){
     const muro=document.getElementById('muro');const data=cargar();
-    muro.innerHTML=data.map(p=>`<div class="post">
+    muro.innerHTML=data.map((p,i)=>`<div class="post">
       ${p.img?`<img src="${p.img}" alt="Foto de un loro">`:''}
       <div>${p.img?'🦜 ':''}<b>${escapar(p.nombre)}</b>: ${escapar(p.mensaje)}</div>
-      <small>${p.fecha||''}</small></div>`).join('')||
+      <small>${p.fecha||''}</small>
+      <button class="share-post" onclick="compartirPost(${i})">📤 Compartir en redes</button>
+    </div>`).join('')||
       '<p style="text-align:center;opacity:.9">¡Sé el primero en compartir un loro! 🦜</p>';
   }
   function publicar(ev){
@@ -480,6 +506,43 @@
     return false;
   }
   pintar();
+
+  /* ---- Compartir en redes sociales ---- */
+  const SITE='https://unimauro.github.io/el_loro/';
+  const SHARE_TXT='🦜 Mira "La Expo de los Loros": datos curiosos, plumas de colores y muchas especies 🌈';
+  (function(){
+    const wa=document.getElementById('sh-wa'), fb=document.getElementById('sh-fb'), x=document.getElementById('sh-x');
+    if(wa)wa.href='https://wa.me/?text='+encodeURIComponent(SHARE_TXT+' '+SITE);
+    if(fb)fb.href='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(SITE);
+    if(x) x.href='https://twitter.com/intent/tweet?text='+encodeURIComponent(SHARE_TXT)+'&url='+encodeURIComponent(SITE);
+  })();
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
+  function copiarLink(){
+    (navigator.clipboard?navigator.clipboard.writeText(SITE):Promise.reject())
+      .then(()=>toast('¡Enlace copiado! 🦜'))
+      .catch(()=>{const i=document.createElement('input');i.value=SITE;document.body.appendChild(i);
+        i.select();try{document.execCommand('copy');toast('¡Enlace copiado! 🦜');}catch(e){}i.remove();});
+  }
+  function compartirNativo(){
+    if(navigator.share){navigator.share({title:'La Expo de los Loros',text:SHARE_TXT,url:SITE}).catch(()=>{});}
+    else{copiarLink();}
+  }
+  async function compartirPost(i){
+    const p=cargar()[i];if(!p)return;
+    const texto=`🦜 "${(p.mensaje||'').replace(/[<>]/g,'')}" — ${(p.nombre||'').replace(/[<>]/g,'')} · La Expo de los Loros`;
+    try{
+      if(p.img && navigator.canShare){
+        const blob=await(await fetch(p.img)).blob();
+        const file=new File([blob],'mi-loro.jpg',{type:blob.type||'image/jpeg'});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],text:texto+' '+SITE,title:'La Expo de los Loros'});return;
+        }
+      }
+      if(navigator.share){await navigator.share({text:texto,url:SITE});return;}
+    }catch(e){if(e&&e.name==='AbortError')return;}
+    window.open('https://wa.me/?text='+encodeURIComponent(texto+' '+SITE),'_blank');
+  }
 </script>
 </body>
 </html>
