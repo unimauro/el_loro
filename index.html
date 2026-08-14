@@ -472,16 +472,20 @@
   let previaData=null;
   function previa(inp){
     const f=inp.files[0];if(!f)return;const r=new FileReader();
-    r.onload=e=>{previaData=e.target.result;const im=document.getElementById('previa');
+    r.onload=e=>{const d=e.target.result;
+      if(!imgOK(d)){previaData=null;toast('Solo se aceptan imágenes 🦜');return;}
+      previaData=d;const im=document.getElementById('previa');
       im.src=previaData;im.style.display='block';};
     r.readAsDataURL(f);
   }
   function escapar(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  // Solo aceptamos imágenes como data URL real (defensa contra inyección en el atributo src)
+  function imgOK(s){return typeof s==='string' && /^data:image\/(png|jpe?g|gif|webp|avif);base64,[a-zA-Z0-9+/=]+$/.test(s);}
   function cargar(){return JSON.parse(localStorage.getItem(KEY)||'[]');}
   function pintar(){
     const muro=document.getElementById('muro');const data=cargar();
     muro.innerHTML=data.map((p,i)=>`<div class="post">
-      ${p.img?`<img src="${p.img}" alt="Foto de un loro">`:''}
+      ${imgOK(p.img)?`<img src="${p.img}" alt="Foto de un loro">`:''}
       <div>${p.img?'🦜 ':''}<b>${escapar(p.nombre)}</b>: ${escapar(p.mensaje)}</div>
       <small>${p.fecha||''}</small>
       <button class="share-post" onclick="compartirPost(${i})">📤 Compartir en redes</button>
@@ -536,7 +540,7 @@
     registrarCompartir();
     const texto=`🦜 "${(p.mensaje||'').replace(/[<>]/g,'')}" — ${(p.nombre||'').replace(/[<>]/g,'')} · La Expo de los Loros`;
     try{
-      if(p.img && navigator.canShare){
+      if(imgOK(p.img) && navigator.canShare){
         const blob=await(await fetch(p.img)).blob();
         const file=new File([blob],'mi-loro.jpg',{type:blob.type||'image/jpeg'});
         if(navigator.canShare({files:[file]})){
