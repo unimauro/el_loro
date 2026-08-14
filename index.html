@@ -384,6 +384,7 @@
       <h3>🦜 ¡Comparte tu loro!</h3>
       <p class="sub">¿Conoces un loro? Súbelo y déjanos un saludo 💚</p>
       <form class="form" id="form" onsubmit="return publicar(event)">
+        <input id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <input id="nombre" type="text" placeholder="Tu nombre" maxlength="40" required>
         <textarea id="mensaje" placeholder="Escribe un comentario bonito sobre los loros..." maxlength="240" required></textarea>
         <label class="foto-btn">📷 Subir una foto de un loro (opcional)
@@ -468,50 +469,82 @@
   /* ---- Muro: sube tu loro + comentarios ----
      Guarda en este dispositivo (localStorage). Para comentarios COMPARTIDOS entre
      todos los celulares, se conecta la Tunky API poniendo:  window.TUNKY_API = 'https://...'  */
-  const KEY='muro_loros';
+  const MURO_API='https://api.tunky.net/loros/muro';
+  const CACHE='muro_loros';
   let previaData=null;
-  function previa(inp){
-    const f=inp.files[0];if(!f)return;const r=new FileReader();
-    r.onload=e=>{const d=e.target.result;
-      if(!imgOK(d)){previaData=null;toast('Solo se aceptan imágenes 🦜');return;}
-      previaData=d;const im=document.getElementById('previa');
-      im.src=previaData;im.style.display='block';};
-    r.readAsDataURL(f);
-  }
+  let postsCache=[];
   function escapar(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
   // Solo aceptamos imágenes como data URL real (defensa contra inyección en el atributo src)
-  function imgOK(s){return typeof s==='string' && /^data:image\/(png|jpe?g|gif|webp|avif);base64,[a-zA-Z0-9+/=]+$/.test(s);}
-  function cargar(){return JSON.parse(localStorage.getItem(KEY)||'[]');}
+  function imgOK(s){return typeof s==='string' && /^data:image\/(png|jpe?g|gif|webp);base64,[a-zA-Z0-9+/=]+$/.test(s) && s.length<=900000;}
+
+  // Reduce la imagen EN EL NAVEGADOR (máx 800px, JPEG) para que suba liviana y segura
+  function previa(inp){
+    const f=inp.files&&inp.files[0];if(!f)return;
+    if(!/^image\//.test(f.type)){toast('Solo imágenes 🦜');return;}
+    const r=new FileReader();
+    r.onload=e=>{const im=new Image();
+      im.onload=()=>{
+        const max=800;let w=im.width,h=im.height;
+        if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(im,0,0,w,h);
+        const data=c.toDataURL('image/jpeg',0.72);
+        if(!imgOK(data)){previaData=null;toast('Imagen muy grande 🦜');return;}
+        previaData=data;const pv=document.getElementById('previa');pv.src=data;pv.style.display='block';
+      };
+      im.onerror=()=>{previaData=null;toast('No se pudo leer la imagen');};
+      im.src=e.target.result;};
+    r.readAsDataURL(f);
+  }
+
+  function cacheGet(){try{return JSON.parse(localStorage.getItem(CACHE)||'[]')}catch{return[]}}
+  function cacheSet(a){try{localStorage.setItem(CACHE,JSON.stringify(a.slice(0,50)))}catch(e){}}
+
   function pintar(){
-    const muro=document.getElementById('muro');const data=cargar();
-    muro.innerHTML=data.map((p,i)=>`<div class="post">
+    const muro=document.getElementById('muro');
+    muro.innerHTML=postsCache.map((p,i)=>`<div class="post">
       ${imgOK(p.img)?`<img src="${p.img}" alt="Foto de un loro">`:''}
       <div>${p.img?'🦜 ':''}<b>${escapar(p.nombre)}</b>: ${escapar(p.mensaje)}</div>
-      <small>${p.fecha||''}</small>
+      <small>${escapar(p.fecha||'')}</small>
       <button class="share-post" onclick="compartirPost(${i})">📤 Compartir en redes</button>
     </div>`).join('')||
       '<p style="text-align:center;opacity:.9">¡Sé el primero en compartir un loro! 🦜</p>';
   }
-  function publicar(ev){
+
+  async function cargarMuro(){
+    try{
+      const r=await fetch(MURO_API);const d=await r.json();
+      if(d&&d.ok&&Array.isArray(d.posts)){postsCache=d.posts;cacheSet(postsCache);pintar();return;}
+    }catch(e){}
+    postsCache=cacheGet();pintar(); // sin conexión: usa la caché local del equipo
+  }
+
+  async function publicar(ev){
     ev.preventDefault();
     const nombre=document.getElementById('nombre').value.trim();
     const mensaje=document.getElementById('mensaje').value.trim();
+    const website=document.getElementById('website')?document.getElementById('website').value:''; // honeypot
     if(!nombre||!mensaje)return false;
-    const post={nombre,mensaje,img:previaData,fecha:new Date().toLocaleDateString('es-PE')};
-    // Si hay Tunky API configurada, enviar allí; si no, guardar local
-    if(window.TUNKY_API){
-      fetch(window.TUNKY_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(post)})
-        .catch(()=>{});
+    const btn=ev.target.querySelector('button[type=submit]');
+    if(btn){btn.disabled=true;btn.textContent='Enviando…';}
+    try{
+      const r=await fetch(MURO_API,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({nombre,mensaje,img:previaData||null,website})});
+      const d=await r.json();
+      if(!r.ok||!d.ok){toast(d&&d.error?d.error:'No se pudo publicar');}
+      else if(d.post){postsCache.unshift(d.post);cacheSet(postsCache);pintar();toast('¡Publicado! 🦜');}
+    }catch(e){
+      // sin conexión: guarda local para que igual se vea el loro en este equipo
+      postsCache.unshift({id:'local-'+Date.now(),nombre,mensaje,img:previaData||null,fecha:new Date().toLocaleDateString('es-PE')});
+      cacheSet(postsCache);pintar();toast('Guardado en este equipo');
     }
-    const data=cargar();data.unshift(post);
-    try{localStorage.setItem(KEY,JSON.stringify(data.slice(0,50)));}catch(e){}
     document.getElementById('form').reset();
     document.getElementById('previa').style.display='none';previaData=null;
-    pintar();
+    if(btn){btn.disabled=false;btn.textContent='✨ Publicar mi loro';}
     document.getElementById('muro').scrollIntoView({behavior:'smooth'});
     return false;
   }
-  pintar();
+  cargarMuro();
 
   /* ---- Compartir en redes sociales ---- */
   const SITE='https://unimauro.github.io/el_loro/';
@@ -536,7 +569,7 @@
     else{copiarLink();}
   }
   async function compartirPost(i){
-    const p=cargar()[i];if(!p)return;
+    const p=postsCache[i];if(!p)return;
     registrarCompartir();
     const texto=`🦜 "${(p.mensaje||'').replace(/[<>]/g,'')}" — ${(p.nombre||'').replace(/[<>]/g,'')} · La Expo de los Loros`;
     try{
