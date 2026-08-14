@@ -593,12 +593,19 @@
     else { const box=document.getElementById('contador-box'); if(box) box.style.display='none'; }
   }
   function registrarCompartir(){ fetch(API+'/hit?kind=compartir',{method:'POST',keepalive:true}).catch(()=>{}); }
+  const VKEY='loro_visito';
   (async function contarVisita(){
     try{
-      const r=await fetch(API+'/hit?kind=visita',{method:'POST'});
-      const d=await r.json(); pintarContador(d && d.total);
+      let d;
+      if(!localStorage.getItem(VKEY)){            // primera vez en ESTE dispositivo → suma 1
+        d=await (await fetch(API+'/hit?kind=visita',{method:'POST'})).json();
+        try{localStorage.setItem(VKEY,'1');}catch(e){}
+      }else{                                       // ya visitó → solo mostrar el total actual
+        d=await (await fetch(API+'/count')).json();
+      }
+      pintarContador(d && d.total);
     }catch(e){
-      try{ const r=await fetch(API+'/count'); const d=await r.json(); pintarContador(d && d.total); }
+      try{ const d=await (await fetch(API+'/count')).json(); pintarContador(d && d.total); }
       catch(_){ pintarContador(null); }
     }
   })();
