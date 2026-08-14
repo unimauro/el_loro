@@ -406,7 +406,7 @@
       <p class="firma">🦜 Con mucho cariño 🦜</p>
       <p style="margin-top:1rem;font-size:1.2rem;color:var(--verde2);font-weight:800">🦜 Cada vuelo es una nueva aventura. 🌿</p>
       <p id="contador-box" style="margin-top:1.2rem;font-size:1.15rem;color:var(--verdeh);font-weight:800">
-        👀 Ya somos <span id="cnt" style="color:var(--naranja)">…</span> visitantes en la expo 🦜</p>
+        👀 <span id="cnt" style="color:var(--naranja)">…</span> visitas &nbsp;·&nbsp; <span id="online" style="color:var(--verde2)">…</span> 🟢 en línea</p>
       <p style="margin-top:1.4rem;font-weight:800;color:var(--verdeh);font-size:1.15rem">📣 ¡Comparte la expo en redes!</p>
       <div class="share-bar">
         <a class="sbtn wa" id="sh-wa" target="_blank" rel="noopener">💬 WhatsApp</a>
@@ -587,29 +587,22 @@
 
   /* ---- Contador de visitas (api.tunky.net, bien cerrado por CORS) ---- */
   const API='https://api.tunky.net/loros';
-  function pintarContador(n){
-    const el=document.getElementById('cnt');
-    if(el && typeof n==='number'){ el.textContent=n.toLocaleString('es-PE'); }
-    else { const box=document.getElementById('contador-box'); if(box) box.style.display='none'; }
+  let VID=null; try{VID=localStorage.getItem('loro_vid');}catch(e){}
+  if(!VID){VID=Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem('loro_vid',VID);}catch(e){}}
+  function pintarContador(d){
+    if(!d||typeof d.total!=='number'){const b=document.getElementById('contador-box');if(b)b.style.display='none';return;}
+    const c=document.getElementById('cnt');if(c)c.textContent=d.total.toLocaleString('es-PE');
+    const o=document.getElementById('online');if(o)o.textContent=(d.online||1).toLocaleString('es-PE');
   }
-  function registrarCompartir(){ fetch(API+'/hit?kind=compartir',{method:'POST',keepalive:true}).catch(()=>{}); }
-  const VKEY='loro_visito';
-  (async function contarVisita(){
-    try{
-      let d;
-      if(!localStorage.getItem(VKEY)){            // primera vez en ESTE dispositivo → suma 1
-        d=await (await fetch(API+'/hit?kind=visita',{method:'POST'})).json();
-        try{localStorage.setItem(VKEY,'1');}catch(e){}
-      }else{                                       // ya visitó → solo mostrar el total actual
-        d=await (await fetch(API+'/count')).json();
-      }
-      pintarContador(d && d.total);
-    }catch(e){
-      try{ const d=await (await fetch(API+'/count')).json(); pintarContador(d && d.total); }
-      catch(_){ pintarContador(null); }
-    }
-  })();
-  // registrar "compartir" en los botones de la barra
+  function registrarCompartir(){ fetch(API+'/hit?kind=compartir&vid='+VID,{method:'POST',keepalive:true}).then(r=>r.json()).then(pintarContador).catch(()=>{}); }
+  async function latir(sumar){
+    try{ const u=API+(sumar?('/hit?kind=visita&vid='+VID):('/ping?vid='+VID));
+      const d=await (await fetch(u,{method:'POST'})).json(); pintarContador(d);
+    }catch(e){ if(sumar){ try{ const d=await (await fetch(API+'/count')).json(); pintarContador(d);}catch(_){pintarContador(null);} } }
+  }
+  latir(true);                           // suma esta visita (hit)
+  setInterval(()=>latir(false),10000);   // EN VIVO: actualiza total y "en línea" cada 10 s
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) latir(false); });
   ['sh-wa','sh-fb','sh-x'].forEach(id=>{const a=document.getElementById(id);if(a)a.addEventListener('click',registrarCompartir);});
 </script>
 </body>
