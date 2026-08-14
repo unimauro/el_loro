@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦜 La Expo de los Loros · Gael</title>
+<meta name="description" content="La exposición de Gael Cárdenas Urrutia sobre los loros. YMCA · 3 años. Datos, plumas, pico, alas, especies y mucho color.">
+<meta name="theme-color" content="#2ecc71">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+<style>
+  :root{
+    --verde:#2ecc71; --verde2:#1e9e57; --verdeh:#146b3a; --amarillo:#ffd93d;
+    --rojo:#ff5a5a; --azul:#3aa0ff; --morado:#7c4dff; --naranja:#ff922b;
+    --crema:#fdfbef; --texto:#2c2b30; --sombra:0 10px 30px rgba(20,60,30,.15);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:66px}
+  body{
+    font-family:'Baloo 2','Comic Sans MS','Trebuchet MS',system-ui,sans-serif;
+    color:var(--texto);background:#eafaf0;overflow-x:hidden;line-height:1.55;
+    -webkit-tap-highlight-color:transparent;
+  }
+  img{max-width:100%;display:block}
+
+  /* fondo selva con hojas suaves */
+  .fondo{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,217,61,.25), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(58,160,255,.18), transparent 45%),
+      linear-gradient(180deg,#bff0d0 0%,#e7fbef 40%,#fdfbef 100%);}
+  .hoja,.pluma{position:absolute;font-size:2rem;opacity:.5;user-select:none}
+  .pluma{animation:caer linear infinite}
+  @keyframes caer{
+    0%{transform:translateY(-10vh) rotate(0);opacity:0}
+    10%{opacity:.7}
+    100%{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  .loro-vuela{position:fixed;font-size:2.6rem;z-index:2;pointer-events:none;
+    animation:volar linear infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2))}
+  @keyframes volar{from{transform:translateX(-15vw) translateY(0) scaleX(1)}
+    50%{transform:translateX(50vw) translateY(-4vh) scaleX(1)}
+    to{transform:translateX(115vw) translateY(2vh) scaleX(1)}}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:10;background:rgba(30,158,87,.96);
+    backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(0,0,0,.15)}
+  .nav-in{display:flex;gap:.3rem;overflow-x:auto;padding:.5rem .6rem;
+    max-width:1000px;margin:0 auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .nav-in::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;color:#fff;text-decoration:none;font-weight:700;font-size:.95rem;
+    padding:.35rem .8rem;border-radius:999px;white-space:nowrap;transition:background .15s}
+  nav a:hover,nav a:focus{background:rgba(255,255,255,.22)}
+  nav a.brand{background:var(--amarillo);color:var(--verdeh)}
+
+  main{position:relative;z-index:1}
+  section{max-width:1000px;margin:0 auto;padding:2.4rem 1.1rem;scroll-margin-top:66px}
+
+  /* HERO */
+  .hero{text-align:center;padding-top:2rem}
+  .hero-img{position:relative;max-width:640px;margin:1.2rem auto 0;border-radius:28px;
+    overflow:hidden;box-shadow:var(--sombra);border:6px solid #fff}
+  .hero-img img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  h1{font-size:clamp(2.2rem,10vw,4.6rem);line-height:1.05;margin:.2rem 0;
+    color:#fff;text-shadow:3px 3px 0 var(--verde2),6px 6px 0 rgba(0,0,0,.12)}
+  h1 .r{color:var(--naranja);text-shadow:3px 3px 0 #c85a00}
+  .badge{display:inline-block;background:var(--amarillo);color:var(--verdeh);
+    font-weight:800;padding:.5rem 1.3rem;border-radius:999px;margin:.4rem .3rem;
+    box-shadow:0 4px 0 #e0b800;font-size:1.05rem}
+  .frase{max-width:520px;margin:1rem auto;font-size:1.15rem;color:var(--verdeh);font-weight:600}
+  .cta{font-family:inherit;font-size:1.25rem;font-weight:800;cursor:pointer;border:none;
+    background:var(--rojo);color:#fff;padding:1rem 2rem;border-radius:999px;margin-top:.6rem;
+    box-shadow:0 6px 0 #c93b3b;transition:transform .1s}
+  .cta:active{transform:translateY(5px);box-shadow:0 1px 0 #c93b3b}
+
+  /* bloque de sección */
+  .titulo{text-align:center;font-size:clamp(1.8rem,7vw,3rem);margin-bottom:.3rem;color:#fff}
+  .t-verde{text-shadow:2px 2px 0 var(--verde2)}
+  .t-rojo{text-shadow:2px 2px 0 #c93b3b;color:#fff}
+  .t-morado{text-shadow:2px 2px 0 #5a2ecc}
+  .t-azul{text-shadow:2px 2px 0 #1f6fd0}
+  .t-naranja{text-shadow:2px 2px 0 #c85a00}
+  .titulo-emoji{text-align:center;font-size:2.4rem;margin-bottom:.4rem}
+
+  .bloque{display:grid;grid-template-columns:1fr;gap:1.4rem;align-items:center;margin-top:1rem}
+  @media(min-width:760px){.bloque{grid-template-columns:1fr 1fr}
+    .bloque.rev .foto{order:2}}
+  .foto{border-radius:26px;overflow:hidden;box-shadow:var(--sombra);border:6px solid #fff;background:#fff}
+  .foto img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover}
+  .tarjeta{background:var(--crema);border-radius:26px;padding:1.4rem 1.5rem;box-shadow:var(--sombra);
+    border:4px solid #fff}
+  .tarjeta p{font-size:1.25rem;font-weight:600}
+  .tarjeta .grande{font-size:1.5rem;font-weight:800;color:var(--verde2);display:block;margin-bottom:.4rem}
+  .sci{display:inline-block;margin-top:.8rem;background:#eef7ee;border-radius:14px;padding:.5rem .9rem;
+    font-size:.95rem;color:var(--verdeh)}
+  .sci b{font-style:italic}
+
+  /* chips de colores plumas */
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;justify-content:center}
+  .chip{color:#fff;font-weight:800;padding:.4rem 1rem;border-radius:999px;font-size:1rem;
+    box-shadow:0 3px 0 rgba(0,0,0,.15)}
+
+  /* burbuja Blipii */
+  .burbuja{position:relative;background:#fff;border:4px solid var(--morado);border-radius:22px;
+    padding:1rem 1.3rem;display:inline-block;font-size:1.5rem;font-weight:800;color:var(--morado);
+    box-shadow:var(--sombra);animation:pop .5s ease both}
+  .burbuja::after{content:"";position:absolute;bottom:-18px;left:34px;border:12px solid transparent;
+    border-top-color:var(--morado)}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+  @keyframes pop{from{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}to{transform:scale(1);opacity:1}}
+
+  /* ¿dónde vive? iconos */
+  .habitat{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-top:1rem}
+  @media(min-width:560px){.habitat{grid-template-columns:repeat(4,1fr)}}
+  .habitat div{background:#fff;border-radius:20px;padding:1rem .5rem;text-align:center;
+    box-shadow:var(--sombra);font-weight:700;color:var(--verdeh)}
+  .habitat span{font-size:2.4rem;display:block;margin-bottom:.3rem}
+
+  /* galería especies */
+  .galeria{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:1.2rem}
+  @media(min-width:560px){.galeria{grid-template-columns:1fr 1fr}}
+  @media(min-width:900px){.galeria{grid-template-columns:1fr 1fr 1fr}}
+  .especie{background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--sombra);
+    border:5px solid #fff;transition:transform .15s}
+  .especie:hover{transform:translateY(-6px) rotate(-1deg)}
+  .especie img{width:100%;height:200px;object-fit:cover}
+  .especie .info{padding:1rem 1.1rem}
+  .especie h3{color:var(--verde2);font-size:1.25rem}
+  .especie .cn{font-style:italic;color:var(--naranja);font-weight:700;font-size:.95rem}
+  .especie p{font-size:1rem;margin-top:.4rem}
+
+  /* compartir loros */
+  .compartir{background:linear-gradient(135deg,var(--azul),var(--morado));color:#fff;
+    border-radius:30px;padding:1.8rem 1.4rem;box-shadow:var(--sombra);margin-top:1rem}
+  .compartir h3{font-size:1.6rem;text-align:center;margin-bottom:.3rem}
+  .compartir .sub{text-align:center;opacity:.95;margin-bottom:1.1rem}
+  .form{display:grid;gap:.7rem;max-width:520px;margin:0 auto}
+  .form input,.form textarea{font-family:inherit;font-size:1.05rem;border:none;border-radius:16px;
+    padding:.8rem 1rem;width:100%}
+  .form textarea{min-height:80px;resize:vertical}
+  .form .foto-btn{background:#fff;color:var(--morado);border-radius:16px;padding:.8rem;text-align:center;
+    font-weight:700;cursor:pointer}
+  .form button{font-family:inherit;font-size:1.15rem;font-weight:800;cursor:pointer;border:none;
+    background:var(--amarillo);color:var(--verdeh);border-radius:999px;padding:.9rem;box-shadow:0 5px 0 #e0b800}
+  .form button:active{transform:translateY(4px);box-shadow:0 1px 0 #e0b800}
+  #muro{display:grid;gap:.9rem;max-width:560px;margin:1.4rem auto 0}
+  .post{background:rgba(255,255,255,.95);color:var(--texto);border-radius:20px;padding:1rem;
+    box-shadow:0 6px 16px rgba(0,0,0,.15)}
+  .post img{border-radius:14px;margin-bottom:.6rem;max-height:240px;width:100%;object-fit:cover}
+  .post b{color:var(--verde2)}
+  .post small{color:#888;display:block;margin-top:.3rem}
+
+  /* mensaje final */
+  .final{text-align:center;background:var(--crema);border-radius:30px;padding:2rem 1.4rem;
+    box-shadow:var(--sombra);border:5px solid #fff;margin-top:1rem}
+  .final h3{font-size:clamp(1.6rem,6vw,2.4rem);color:var(--verde2)}
+  .final .firma{font-size:1.3rem;font-weight:800;color:var(--naranja);margin-top:1rem}
+  .arcoiris{font-size:2rem;letter-spacing:.15rem;margin:.6rem 0}
+
+  footer{text-align:center;padding:2rem 1rem 3rem;color:var(--verdeh);font-weight:600;position:relative;z-index:1}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="fondo" id="fondo"></div>
+
+<nav aria-label="Menú">
+  <div class="nav-in">
+    <a class="brand" href="#inicio">🦜 Inicio</a>
+    <a href="#loro">El loro</a>
+    <a href="#plumas">Plumas</a>
+    <a href="#pico">Pico</a>
+    <a href="#habla">Habla</a>
+    <a href="#alas">Alas</a>
+    <a href="#donde">¿Dónde vive?</a>
+    <a href="#especies">Especies</a>
+    <a href="#compartir">Comparte tu loro</a>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <header class="hero" id="inicio">
+    <h1>🦜 ¡La Expo de los <span class="r">Loros</span>! 🦜</h1>
+    <div>
+      <span class="badge">Una aventura de Gael Cárdenas Urrutia</span>
+      <span class="badge">YMCA · 3 años</span>
+    </div>
+    <p class="frase">Hoy aprendemos juntos sobre estas increíbles aves llenas de colores 🌈</p>
+    <button class="cta" onclick="document.getElementById('loro').scrollIntoView()">🌿 ¡Comenzar la aventura! 🌿</button>
+    <div class="hero-img">
+      <img src="assets/poster-hero.jpg" onerror="this.src='assets/ara_ararauna.jpg'"
+           alt="Guacamayo azul y amarillo, un loro grande y colorido" width="640" height="480">
+    </div>
+  </header>
+
+  <!-- 1. EL LORO -->
+  <section id="loro">
+    <div class="titulo-emoji">🦜</div>
+    <h2 class="titulo t-verde">El loro</h2>
+    <div class="bloque">
+      <div class="foto"><img src="assets/poster-loro.jpg" onerror="this.src='assets/ara_ararauna.jpg'"
+        loading="lazy" alt="Loro guacamayo azul y amarillo posado en una rama"></div>
+      <div class="tarjeta">
+        <span class="grande">El loro es un ave. 🪶</span>
+        <p>Pertenece al grupo de los <b>Psittaciformes</b>. Tiene <b>plumas</b>, <b>pico</b>, <b>alas</b> y muchos colores.</p>
+        <span class="sci">🔎 Especie: <b>Ara ararauna</b> (Guacamayo azul y amarillo)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PLUMAS -->
+  <section id="plumas">
+    <div class="titulo-emoji">🪶</div>
+    <h2 class="titulo t-rojo">Plumas de colores</h2>
+    <div class="bloque rev">
+      <div class="foto"><img src="assets/poster-plumas.jpg" onerror="this.src='assets/ara_macao.jpg'"
+        loading="lazy" alt="Guacamayo rojo con plumas rojas, amarillas y azules"></div>
+      <div class="tarjeta">
+        <p>Los loros tienen plumas muy coloridas. Cada especie puede tener colores diferentes. 🌈</p>
+        <div class="chips">
+          <span class="chip" style="background:var(--verde)">verde</span>
+          <span class="chip" style="background:var(--rojo)">rojo</span>
+          <span class="chip" style="background:var(--azul)">azul</span>
+          <span class="chip" style="background:var(--amarillo);color:var(--verdeh)">amarillo</span>
+          <span class="chip" style="background:#8a8f99">gris</span>
+        </div>
+        <span class="sci">🔎 Especie: <b>Ara macao</b> (Guacamayo rojo)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PICO -->
+  <section id="pico">
+    <div class="titulo-emoji">🦜</div>
+    <h2 class="titulo t-naranja">Su pico</h2>
+    <div class="bloque">
+      <div class="foto"><img src="assets/poster-pico.jpg" onerror="this.src='assets/amazona_ochrocephala.jpg'"
+        loading="lazy" alt="Loro mostrando su pico fuerte y curvado"></div>
+      <div class="tarjeta">
+        <p>Los loros tienen un <b>pico fuerte y curvado</b> que usan para comer, trepar y explorar. 🥜</p>
+        <span class="sci">🔎 Especie: <b>Amazona ochrocephala</b> (Loro de cabeza amarilla)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. HABLA -->
+  <section id="habla">
+    <div class="titulo-emoji">💬</div>
+    <h2 class="titulo t-morado">¡Habla!</h2>
+    <div class="bloque rev">
+      <div class="foto"><img src="assets/poster-habla.jpg" onerror="this.src='assets/psittacus_erithacus.jpg'"
+        loading="lazy" alt="Loro gris africano, parecido a Blipii"></div>
+      <div class="tarjeta">
+        <div class="burbuja" id="burbuja">¡Soy Blipii! 🦜</div>
+        <p style="margin-top:1.2rem">Algunos loros pueden aprender a <b>imitar sonidos y palabras</b>.</p>
+        <button class="cta" style="font-size:1.05rem;padding:.7rem 1.3rem;box-shadow:0 5px 0 #5a2ecc;background:var(--morado)"
+          onclick="blipiiHabla()">🔊 ¡Que hable Blipii!</button>
+        <span class="sci">🔎 Especie: <b>Psittacus erithacus</b> (Loro gris africano)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ALAS -->
+  <section id="alas">
+    <div class="titulo-emoji">🪽</div>
+    <h2 class="titulo t-azul">Alas</h2>
+    <div class="bloque">
+      <div class="foto"><img src="assets/poster-alas.jpg" onerror="this.src='assets/cacatua_galerita.jpg'"
+        loading="lazy" alt="Cacatúa con las alas abiertas volando"></div>
+      <div class="tarjeta">
+        <p style="font-size:1.5rem;font-weight:800;color:var(--azul)">Sus alas les permiten volar. 🕊️</p>
+        <p>¡Vuelan alto entre los árboles con mucha libertad!</p>
+        <span class="sci">🔎 Especie: <b>Cacatua galerita</b> (Cacatúa de cresta amarilla)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DÓNDE VIVE -->
+  <section id="donde">
+    <div class="titulo-emoji">🌳</div>
+    <h2 class="titulo t-verde">¿Dónde vive?</h2>
+    <div class="bloque rev">
+      <div class="foto"><img src="assets/poster-donde.jpg" onerror="this.src='assets/amazona_ochrocephala.jpg'"
+        loading="lazy" alt="Loro verde en la selva tropical"></div>
+      <div class="tarjeta">
+        <p>Muchos loros viven en <b>bosques y selvas tropicales</b>, donde encuentran árboles, frutos, semillas y agua. 🌿</p>
+        <div class="habitat">
+          <div><span>🌳</span>Bosques tropicales</div>
+          <div><span>☀️</span>Clima cálido</div>
+          <div><span>💧</span>Ríos</div>
+          <div><span>🌴</span>Árboles altos</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPECIES -->
+  <section id="especies">
+    <div class="titulo-emoji">🦜🦜🦜</div>
+    <h2 class="titulo t-verde">Conozcamos algunos loros</h2>
+    <p style="text-align:center;color:var(--verdeh);font-weight:600;margin-top:.4rem">Todos son de la familia de los loros (Psittaciformes) 💚</p>
+    <div class="galeria">
+      <article class="especie">
+        <img src="assets/ara_macao.jpg" loading="lazy" alt="Guacamayo rojo Ara macao">
+        <div class="info"><h3>Guacamayo rojo</h3><div class="cn">Ara macao</div>
+          <p>Grande y muy colorido: rojo, amarillo y azul. Vive en la selva. 🌎</p></div>
+      </article>
+      <article class="especie">
+        <img src="assets/ara_ararauna.jpg" loading="lazy" alt="Guacamayo azul y amarillo Ara ararauna">
+        <div class="info"><h3>Guacamayo azul y amarillo</h3><div class="cn">Ara ararauna</div>
+          <p>Tiene el pecho amarillo y las alas azules. ¡Es enorme! 💙💛</p></div>
+      </article>
+      <article class="especie">
+        <img src="assets/amazona_ochrocephala.jpg" loading="lazy" alt="Loro de cabeza amarilla Amazona ochrocephala">
+        <div class="info"><h3>Loro de cabeza amarilla</h3><div class="cn">Amazona ochrocephala</div>
+          <p>Es verde con la cabeza amarilla. Aprende palabras muy bien. 💛</p></div>
+      </article>
+      <article class="especie">
+        <img src="assets/psittacus_erithacus.jpg" loading="lazy" alt="Loro gris africano Psittacus erithacus">
+        <div class="info"><h3>Loro gris africano</h3><div class="cn">Psittacus erithacus</div>
+          <p>El más hablador del mundo. ¡Es como Blipii! 🩶</p></div>
+      </article>
+      <article class="especie">
+        <img src="assets/cacatua_galerita.jpg" loading="lazy" alt="Cacatúa de cresta amarilla Cacatua galerita">
+        <div class="info"><h3>Cacatúa de cresta amarilla</h3><div class="cn">Cacatua galerita</div>
+          <p>Tiene un penacho amarillo que sube y baja. ¡Y sabe bailar! 🎵</p></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- COMPARTIR -->
+  <section id="compartir">
+    <div class="compartir">
+      <h3>🦜 ¡Comparte tu loro!</h3>
+      <p class="sub">¿Conoces un loro? Súbelo y déjale un saludo a Gael 💚</p>
+      <form class="form" id="form" onsubmit="return publicar(event)">
+        <input id="nombre" type="text" placeholder="Tu nombre" maxlength="40" required>
+        <textarea id="mensaje" placeholder="Escribe un comentario bonito sobre los loros..." maxlength="240" required></textarea>
+        <label class="foto-btn">📷 Subir una foto de un loro (opcional)
+          <input id="archivo" type="file" accept="image/*" hidden onchange="previa(this)">
+        </label>
+        <img id="previa" style="display:none;border-radius:16px" alt="Vista previa">
+        <button type="submit">✨ Publicar mi loro</button>
+      </form>
+      <div id="muro" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section id="gracias">
+    <div class="final">
+      <div class="arcoiris">🟥🟧🟨🟩🟦🟪</div>
+      <h3>❤️ Gracias por acompañarme</h3>
+      <p style="font-size:1.2rem;margin-top:.6rem">Gracias por ser parte de mi aventura y escuchar mi exposición sobre los loros. 🦜</p>
+      <p class="firma">Con cariño,<br>Gael Cárdenas Urrutia</p>
+      <p style="color:var(--verdeh);font-weight:700">YMCA · 3 años 🦜</p>
+      <p style="margin-top:1rem;font-size:1.2rem;color:var(--verde2);font-weight:800">🦜 Cada vuelo es una nueva aventura. 🌿</p>
+    </div>
+  </section>
+</main>
+
+<footer>Hecho con mucho cariño para la exposición de Gael 💚🦜</footer>
+
+<script>
+  /* ---- fondo: hojas fijas + plumas cayendo + loros volando ---- */
+  const fondo=document.getElementById('fondo');
+  const hojas=['🌿','🍃','🌴','🌺','🌸'];
+  for(let i=0;i<10;i++){const h=document.createElement('span');h.className='hoja';
+    h.textContent=hojas[i%hojas.length];h.style.left=(Math.random()*95)+'%';
+    h.style.top=(Math.random()*95)+'%';h.style.fontSize=(1.5+Math.random()*2.5)+'rem';
+    h.style.transform='rotate('+(Math.random()*360)+'deg)';fondo.appendChild(h);}
+  const plumas=['🪶','🍃','🪶'];
+  for(let i=0;i<8;i++){const p=document.createElement('span');p.className='pluma';
+    p.textContent=plumas[i%plumas.length];p.style.left=(Math.random()*100)+'%';
+    p.style.fontSize=(1.2+Math.random()*1.5)+'rem';
+    p.style.animationDuration=(9+Math.random()*10)+'s';
+    p.style.animationDelay=(-Math.random()*12)+'s';fondo.appendChild(p);}
+  const loritos=['🦜','🦜','🦜'];
+  for(let i=0;i<3;i++){const l=document.createElement('span');l.className='loro-vuela';
+    l.textContent='🦜';l.style.top=(10+Math.random()*70)+'%';
+    l.style.animationDuration=(16+Math.random()*14)+'s';
+    l.style.animationDelay=(-Math.random()*20)+'s';document.body.appendChild(l);}
+
+  /* ---- Blipii habla (sonido gracioso) ---- */
+  function blipiiHabla(){
+    const b=document.getElementById('burbuja');
+    const frases=['¡Soy Blipii! 🦜','¡Hola Gael! 👋','¡Lorito bonito! 💚','¡Squawk! 📣','¡Quiero fruta! 🍎'];
+    b.textContent=frases[Math.floor(Math.random()*frases.length)];
+    b.style.animation='none';b.offsetHeight;b.style.animation='pop .5s ease both';
+    try{const c=new(window.AudioContext||window.webkitAudioContext)();
+      const o=c.createOscillator(),g=c.createGain();o.type='triangle';
+      o.frequency.setValueAtTime(680,c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(1500,c.currentTime+.15);
+      o.frequency.exponentialRampToValueAtTime(520,c.currentTime+.3);
+      g.gain.setValueAtTime(.14,c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.34);
+      o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.34);}catch(e){}
+  }
+
+  /* ---- Muro: sube tu loro + comentarios ----
+     Guarda en este dispositivo (localStorage). Para comentarios COMPARTIDOS entre
+     todos los celulares, se conecta la Tunky API poniendo:  window.TUNKY_API = 'https://...'  */
+  const KEY='loros_gael_muro';
+  let previaData=null;
+  function previa(inp){
+    const f=inp.files[0];if(!f)return;const r=new FileReader();
+    r.onload=e=>{previaData=e.target.result;const im=document.getElementById('previa');
+      im.src=previaData;im.style.display='block';};
+    r.readAsDataURL(f);
+  }
+  function escapar(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function cargar(){return JSON.parse(localStorage.getItem(KEY)||'[]');}
+  function pintar(){
+    const muro=document.getElementById('muro');const data=cargar();
+    muro.innerHTML=data.map(p=>`<div class="post">
+      ${p.img?`<img src="${p.img}" alt="Foto de un loro">`:''}
+      <div>${p.img?'🦜 ':''}<b>${escapar(p.nombre)}</b>: ${escapar(p.mensaje)}</div>
+      <small>${p.fecha||''}</small></div>`).join('')||
+      '<p style="text-align:center;opacity:.9">¡Sé el primero en compartir un loro! 🦜</p>';
+  }
+  function publicar(ev){
+    ev.preventDefault();
+    const nombre=document.getElementById('nombre').value.trim();
+    const mensaje=document.getElementById('mensaje').value.trim();
+    if(!nombre||!mensaje)return false;
+    const post={nombre,mensaje,img:previaData,fecha:new Date().toLocaleDateString('es-PE')};
+    // Si hay Tunky API configurada, enviar allí; si no, guardar local
+    if(window.TUNKY_API){
+      fetch(window.TUNKY_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(post)})
+        .catch(()=>{});
+    }
+    const data=cargar();data.unshift(post);
+    try{localStorage.setItem(KEY,JSON.stringify(data.slice(0,50)));}catch(e){}
+    document.getElementById('form').reset();
+    document.getElementById('previa').style.display='none';previaData=null;
+    pintar();
+    document.getElementById('muro').scrollIntoView({behavior:'smooth'});
+    return false;
+  }
+  pintar();
+</script>
+</body>
+</html>
